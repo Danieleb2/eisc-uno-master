@@ -1,7 +1,10 @@
 package org.example.eiscuno.controller;
 
+
+import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -27,6 +30,15 @@ public class GameUnoController {
     @FXML
     private ImageView tableImageView;
 
+    @FXML
+    private Button salirButton;
+
+    @FXML
+    private Button deckButton;
+
+    @FXML
+    private Button unoButton;
+
     private Player humanPlayer;
     private Player machinePlayer;
     private Deck deck;
@@ -42,6 +54,17 @@ public class GameUnoController {
      */
     @FXML
     public void initialize() {
+
+        // Configurar imágenes para los botones
+        setButtonImage(salirButton, "/org/example/eiscuno/images/salir.png");
+        setButtonImage(deckButton, "/org/example/eiscuno/images/deck.png");
+        setButtonImage(unoButton, "/org/example/eiscuno/images/button_uno.png");
+
+
+
+        // Añadir el EventHandler al botón "Salir"
+        salirButton.setOnAction(this::handleSalirButtonAction);
+
         initVariables();
         this.gameUno.startGame();
         printCardsHumanPlayer();
@@ -52,6 +75,41 @@ public class GameUnoController {
 
         threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView);
         threadPlayMachine.start();
+    }
+
+    private void setButtonImage(Button button, String imagePath) {
+        Image image = new Image(getClass().getResourceAsStream(imagePath));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(50); // Ajustar el tamaño de la imagen
+        imageView.setFitHeight(50);
+        button.setGraphic(imageView);
+    }
+
+
+    private void handleSalirButtonAction(ActionEvent event) {
+        // Cerrar el programa
+        System.exit(0);
+    }
+
+    /**
+     * Handles the action of taking a card.
+     *
+     * @param event the action event
+     */
+    // Métodos de manejo de otros botones
+    @FXML
+    private void onHandleTakeCard(ActionEvent event) {
+        // Lógica para manejar la acción de tomar carta
+    }
+
+    /**
+     * Handles the action of saying "Uno".
+     *
+     * @param event the action event
+     */
+    @FXML
+    private void onHandleUno(ActionEvent event) {
+        // Lógica para manejar la acción de botón UNO
     }
 
     /**
@@ -131,23 +189,4 @@ public class GameUnoController {
         }
     }
 
-    /**
-     * Handles the action of taking a card.
-     *
-     * @param event the action event
-     */
-    @FXML
-    void onHandleTakeCard(ActionEvent event) {
-        // Implement logic to take a card here
-    }
-
-    /**
-     * Handles the action of saying "Uno".
-     *
-     * @param event the action event
-     */
-    @FXML
-    void onHandleUno(ActionEvent event) {
-        // Implement logic to handle Uno event here
-    }
 }
