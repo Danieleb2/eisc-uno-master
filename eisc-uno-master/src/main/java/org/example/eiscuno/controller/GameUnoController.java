@@ -55,13 +55,6 @@ public class GameUnoController {
     @FXML
     public void initialize() {
 
-        // Configurar imágenes para los botones
-        setButtonImage(salirButton, "/org/example/eiscuno/images/salir.png");
-        setButtonImage(deckButton, "/org/example/eiscuno/images/deck.png");
-        setButtonImage(unoButton, "/org/example/eiscuno/images/button_uno.png");
-
-
-
         // Añadir el EventHandler al botón "Salir"
         salirButton.setOnAction(this::handleSalirButtonAction);
 
@@ -75,14 +68,6 @@ public class GameUnoController {
 
         threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView);
         threadPlayMachine.start();
-    }
-
-    private void setButtonImage(Button button, String imagePath) {
-        Image image = new Image(getClass().getResourceAsStream(imagePath));
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(50); // Ajustar el tamaño de la imagen
-        imageView.setFitHeight(50);
-        button.setGraphic(imageView);
     }
 
 
@@ -100,6 +85,8 @@ public class GameUnoController {
     @FXML
     private void onHandleTakeCard(ActionEvent event) {
         // Lógica para manejar la acción de tomar carta
+        System.out.println("Tomar carta");
+        humanPlayer.addCard(this.deck.takeCard());
     }
 
     /**
@@ -110,6 +97,8 @@ public class GameUnoController {
     @FXML
     private void onHandleUno(ActionEvent event) {
         // Lógica para manejar la acción de botón UNO
+        System.out.println("Maquina Toma carta");
+        machinePlayer.addCard(this.deck.takeCard());
     }
 
     /**
@@ -137,11 +126,36 @@ public class GameUnoController {
 
             cardImageView.setOnMouseClicked((MouseEvent event) -> {
                 // Aqui deberian verificar si pueden en la tabla jugar esa carta
-                gameUno.playCard(card);
-                tableImageView.setImage(card.getImage());
-                humanPlayer.removeCard(findPosCardsHumanPlayer(card));
-                threadPlayMachine.setHasPlayerPlayed(true);
-                printCardsHumanPlayer();
+                try {
+                    if(this.table.getCurrentCardOnTheTable().getColor().equalsIgnoreCase(card.getColor())){
+                        //las cartas son del mismo color puede poner la carta
+                        gameUno.playCard(card);
+                        tableImageView.setImage(card.getImage());
+                        humanPlayer.removeCard(findPosCardsHumanPlayer(card));
+                        threadPlayMachine.setHasPlayerPlayed(true);
+                        printCardsHumanPlayer();
+                    } else if(this.table.getCurrentCardOnTheTable().getValue().equalsIgnoreCase(card.getValue())){
+                        //puede poner la carta
+                        gameUno.playCard(card);
+                        tableImageView.setImage(card.getImage());
+                        humanPlayer.removeCard(findPosCardsHumanPlayer(card));
+                        threadPlayMachine.setHasPlayerPlayed(true);
+                        printCardsHumanPlayer();
+                    }
+                    //else if validar las cartas que tienen poderes WILD
+                    else{
+                        //no puedes colocar la carta
+                        //JOptionPane.showMessageDialog(null, "No puedes colocar esa carta");
+                        System.out.println("No puedes colocar esa carta");
+                    }
+                }catch(IndexOutOfBoundsException e){
+                    gameUno.playCard(card);
+                    tableImageView.setImage(card.getImage());
+                    humanPlayer.removeCard(findPosCardsHumanPlayer(card));
+                    threadPlayMachine.setHasPlayerPlayed(true);
+                    printCardsHumanPlayer();
+                }
+
             });
 
             this.gridPaneCardsPlayer.add(cardImageView, i, 0);
