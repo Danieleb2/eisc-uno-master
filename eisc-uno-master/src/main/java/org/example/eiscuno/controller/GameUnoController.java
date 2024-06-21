@@ -1,7 +1,10 @@
 package org.example.eiscuno.controller;
 
+
+import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -27,6 +30,15 @@ public class GameUnoController {
     @FXML
     private ImageView tableImageView;
 
+    @FXML
+    private Button salirButton;
+
+    @FXML
+    private Button deckButton;
+
+    @FXML
+    private Button unoButton;
+
     private Player humanPlayer;
     private Player machinePlayer;
     private Deck deck;
@@ -42,6 +54,10 @@ public class GameUnoController {
      */
     @FXML
     public void initialize() {
+
+        // Añadir el EventHandler al botón "Salir"
+        salirButton.setOnAction(this::handleSalirButtonAction);
+
         initVariables();
         this.gameUno.startGame();
         printCardsHumanPlayer();
@@ -52,6 +68,37 @@ public class GameUnoController {
 
         threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView);
         threadPlayMachine.start();
+    }
+
+
+    private void handleSalirButtonAction(ActionEvent event) {
+        // Cerrar el programa
+        System.exit(0);
+    }
+
+    /**
+     * Handles the action of taking a card.
+     *
+     * @param event the action event
+     */
+    // Métodos de manejo de otros botones
+    @FXML
+    private void onHandleTakeCard(ActionEvent event) {
+        // Lógica para manejar la acción de tomar carta
+        System.out.println("Tomar carta");
+        humanPlayer.addCard(this.deck.takeCard());
+    }
+
+    /**
+     * Handles the action of saying "Uno".
+     *
+     * @param event the action event
+     */
+    @FXML
+    private void onHandleUno(ActionEvent event) {
+        // Lógica para manejar la acción de botón UNO
+        System.out.println("Maquina Toma carta");
+        machinePlayer.addCard(this.deck.takeCard());
     }
 
     /**
@@ -79,11 +126,36 @@ public class GameUnoController {
 
             cardImageView.setOnMouseClicked((MouseEvent event) -> {
                 // Aqui deberian verificar si pueden en la tabla jugar esa carta
-                gameUno.playCard(card);
-                tableImageView.setImage(card.getImage());
-                humanPlayer.removeCard(findPosCardsHumanPlayer(card));
-                threadPlayMachine.setHasPlayerPlayed(true);
-                printCardsHumanPlayer();
+                try {
+                    if(this.table.getCurrentCardOnTheTable().getColor().equalsIgnoreCase(card.getColor())){
+                        //las cartas son del mismo color puede poner la carta
+                        gameUno.playCard(card);
+                        tableImageView.setImage(card.getImage());
+                        humanPlayer.removeCard(findPosCardsHumanPlayer(card));
+                        threadPlayMachine.setHasPlayerPlayed(true);
+                        printCardsHumanPlayer();
+                    } else if(this.table.getCurrentCardOnTheTable().getValue().equalsIgnoreCase(card.getValue())){
+                        //puede poner la carta
+                        gameUno.playCard(card);
+                        tableImageView.setImage(card.getImage());
+                        humanPlayer.removeCard(findPosCardsHumanPlayer(card));
+                        threadPlayMachine.setHasPlayerPlayed(true);
+                        printCardsHumanPlayer();
+                    }
+                    //else if validar las cartas que tienen poderes WILD
+                    else{
+                        //no puedes colocar la carta
+                        //JOptionPane.showMessageDialog(null, "No puedes colocar esa carta");
+                        System.out.println("No puedes colocar esa carta");
+                    }
+                }catch(IndexOutOfBoundsException e){
+                    gameUno.playCard(card);
+                    tableImageView.setImage(card.getImage());
+                    humanPlayer.removeCard(findPosCardsHumanPlayer(card));
+                    threadPlayMachine.setHasPlayerPlayed(true);
+                    printCardsHumanPlayer();
+                }
+
             });
 
             this.gridPaneCardsPlayer.add(cardImageView, i, 0);
@@ -131,23 +203,4 @@ public class GameUnoController {
         }
     }
 
-    /**
-     * Handles the action of taking a card.
-     *
-     * @param event the action event
-     */
-    @FXML
-    void onHandleTakeCard(ActionEvent event) {
-        // Implement logic to take a card here
-    }
-
-    /**
-     * Handles the action of saying "Uno".
-     *
-     * @param event the action event
-     */
-    @FXML
-    void onHandleUno(ActionEvent event) {
-        // Implement logic to handle Uno event here
-    }
 }
