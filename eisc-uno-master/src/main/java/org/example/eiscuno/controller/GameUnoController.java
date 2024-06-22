@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import org.example.eiscuno.model.Observer;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
 import org.example.eiscuno.model.game.GameUno;
@@ -19,7 +20,7 @@ import org.example.eiscuno.model.table.Table;
 /**
  * Controller class for the Uno game.
  */
-public class GameUnoController {
+public class GameUnoController implements Observer {
 
     @FXML
     private GridPane gridPaneCardsMachine;
@@ -69,12 +70,12 @@ public class GameUnoController {
         t.start();
 
         threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView);
+        threadPlayMachine.addObserver(this);
         threadPlayMachine.start();
 
-        updateMachineCards(7); // Suponiendo que empiezas con 4 cartas
+        updateMachineCards(7); // Suponiendo que empiezas con 7 cartas
 
     }
-
 
     private void handleSalirButtonAction(ActionEvent event) {
         // Cerrar el programa
@@ -89,9 +90,14 @@ public class GameUnoController {
     // Métodos de manejo de otros botones
     @FXML
     private void onHandleTakeCard(ActionEvent event) {
+        if (threadPlayMachine.isAlive()) {
+            System.out.println("No puedes tomar una carta mientras la máquina está jugando.");
+            return;
+        }
         // Lógica para manejar la acción de tomar carta
         System.out.println("Tomar carta");
         humanPlayer.addCard(this.deck.takeCard());
+        printCardsHumanPlayer();
     }
 
     /**
@@ -101,6 +107,10 @@ public class GameUnoController {
      */
     @FXML
     private void onHandleUno(ActionEvent event) {
+        if (threadPlayMachine.isAlive()) {
+            System.out.println("No puedes presionar UNO mientras la máquina está jugando.");
+            return;
+        }
         // Lógica para manejar la acción de botón UNO
         System.out.println("Maquina Toma carta");
         machinePlayer.addCard(this.deck.takeCard());
@@ -222,5 +232,16 @@ public class GameUnoController {
     public void someMethodThatUpdatesCards() {
         int numberOfMachineCards = 7; // Obtén el número de cartas de la máquina de tu lógica de juego
         updateMachineCards(numberOfMachineCards);
+    }
+
+    @Override
+    public void update(boolean isThreadRunning) {
+        if (isThreadRunning) {
+            deckButton.setDisable(true);
+            unoButton.setDisable(false);
+        } else {
+            deckButton.setDisable(false);
+            unoButton.setDisable(true);
+        }
     }
 }
