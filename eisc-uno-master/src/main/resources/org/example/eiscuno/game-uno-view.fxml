@@ -9,11 +9,11 @@
     <left>
         <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
-            <ImageView fitHeight="194.0" fitWidth="190.0" layoutX="5.0" layoutY="8.0">
-               <image>
-                  <Image url="@images/deck.png" />
-               </image>
-            </ImageView>
+                <ImageView fitHeight="194.0" fitWidth="190.0" layoutX="5.0" layoutY="8.0">
+                    <image>
+                        <Image url="@images/deck.png" />
+                    </image>
+                </ImageView>
                 <Button fx:id="deckButton" layoutX="50.0" layoutY="30.0" mnemonicParsing="false" onAction="#onHandleTakeCard" opacity="0.0" prefHeight="149.0" prefWidth="100.0" />
             </children>
         </Pane>
@@ -21,11 +21,11 @@
     <right>
         <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
-            <ImageView fitHeight="62.0" fitWidth="107.0" layoutX="47.0" layoutY="71.0">
-               <image>
-                  <Image url="@images/button_uno.png" />
-               </image>
-            </ImageView>
+                <ImageView fitHeight="62.0" fitWidth="107.0" layoutX="47.0" layoutY="71.0">
+                    <image>
+                        <Image url="@images/button_uno.png" />
+                    </image>
+                </ImageView>
                 <Button fx:id="unoButton" layoutX="50.0" layoutY="75.0" mnemonicParsing="false" onAction="#onHandleUno" opacity="0.0" prefHeight="50.0" prefWidth="100.0" />
             </children>
         </Pane>
@@ -45,8 +45,11 @@
                         <Font name="Berlin Sans FB Bold" size="18.0" />
                     </font>
                 </Label>
-                <GridPane fx:id="gridPaneCardsMachine">
+                <GridPane fx:id="gridPaneCardsMachine" prefHeight="100.0" prefWidth="427.0">
                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -56,16 +59,16 @@
                         <RowConstraints />
                     </rowConstraints>
                 </GridPane>
-            <Pane prefHeight="100.0" prefWidth="65.0">
-               <children>
-                  <ImageView fitHeight="52.0" fitWidth="69.0" layoutX="-2.0" layoutY="23.0">
-                     <image>
-                        <Image url="@images/salir.png" />
-                     </image>
-                  </ImageView>
-                      <Button fx:id="salirButton" layoutX="-1.0" layoutY="15.0" opacity="0.0" prefHeight="63.0" prefWidth="68.0" />
-               </children>
-            </Pane>
+                <Pane prefHeight="100.0" prefWidth="65.0">
+                    <children>
+                        <ImageView fitHeight="52.0" fitWidth="69.0" layoutX="-2.0" layoutY="23.0">
+                            <image>
+                                <Image url="@images/salir.png" />
+                            </image>
+                        </ImageView>
+                        <Button fx:id="salirButton" layoutX="-1.0" layoutY="15.0" opacity="0.0" prefHeight="63.0" prefWidth="68.0" />
+                    </children>
+                </Pane>
             </children>
         </HBox>
     </top>

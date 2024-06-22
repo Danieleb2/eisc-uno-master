@@ -49,6 +49,8 @@ public class GameUnoController {
     private ThreadSingUNOMachine threadSingUNOMachine;
     private ThreadPlayMachine threadPlayMachine;
 
+    private static final String CARD_BACK_IMAGE_PATH = "/org/example/eiscuno/images/deck.png"; // Asegúrate de que esta ruta sea correcta
+
     /**
      * Initializes the controller.
      */
@@ -68,6 +70,9 @@ public class GameUnoController {
 
         threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView);
         threadPlayMachine.start();
+
+        updateMachineCards(7); // Suponiendo que empiezas con 4 cartas
+
     }
 
 
@@ -203,4 +208,19 @@ public class GameUnoController {
         }
     }
 
+    public void updateMachineCards(int numberOfCards) {
+        gridPaneCardsMachine.getChildren().clear(); // Limpia el GridPane
+        for (int i = 0; i < numberOfCards; i++) {
+            ImageView cardBack = new ImageView(new Image(getClass().getResourceAsStream(CARD_BACK_IMAGE_PATH)));
+            cardBack.setFitHeight(100); // Ajusta según el tamaño deseado
+            cardBack.setFitWidth(80); // Ajusta según el tamaño deseado
+            gridPaneCardsMachine.add(cardBack, i % 7, i / 7); // Coloca la carta en el GridPane
+        }
+    }
+
+    // Método para actualizar las cartas de la máquina
+    public void someMethodThatUpdatesCards() {
+        int numberOfMachineCards = 7; // Obtén el número de cartas de la máquina de tu lógica de juego
+        updateMachineCards(numberOfMachineCards);
+    }
 }
