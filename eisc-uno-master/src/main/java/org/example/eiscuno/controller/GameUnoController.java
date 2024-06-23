@@ -52,15 +52,9 @@ public class GameUnoController implements Observer {
 
     private static final String CARD_BACK_IMAGE_PATH = "/org/example/eiscuno/images/deck.png"; // Asegúrate de que esta ruta sea correcta
 
-    /**
-     * Initializes the controller.
-     */
     @FXML
     public void initialize() {
-
-        // Añadir el EventHandler al botón "Salir"
         salirButton.setOnAction(this::handleSalirButtonAction);
-
         initVariables();
         this.gameUno.startGame();
         printCardsHumanPlayer();
@@ -74,51 +68,40 @@ public class GameUnoController implements Observer {
         threadPlayMachine.start();
 
         updateMachineCards(7); // Suponiendo que empiezas con 7 cartas
-
     }
 
     private void handleSalirButtonAction(ActionEvent event) {
-        // Cerrar el programa
+        closeGame();
+    }
+    public void closeGame(){
         System.exit(0);
     }
 
     /**
-     * Handles the action of taking a card.
-     *
-     * @param event the action event
+     * Handles the event of taking a card from the deck and passing the turn
+     * @param event
      */
-    // Métodos de manejo de otros botones
     @FXML
     private void onHandleTakeCard(ActionEvent event) {
-        if (threadPlayMachine.isAlive()) {
-            System.out.println("No puedes tomar una carta mientras la máquina está jugando.");
-            return;
+        if(threadPlayMachine.hasPlayerPlayed()){
+            System.out.println("you cannot take a card");
+        }else {
+            this.threadPlayMachine.setHasPlayerPlayed(true);
+            System.out.println("Se precionó el boton");
+            humanPlayer.addCard(deck.takeCard());
+            printCardsHumanPlayer();
         }
-        // Lógica para manejar la acción de tomar carta
-        System.out.println("Tomar carta");
-        humanPlayer.addCard(this.deck.takeCard());
-        printCardsHumanPlayer();
     }
 
-    /**
-     * Handles the action of saying "Uno".
-     *
-     * @param event the action event
-     */
     @FXML
     private void onHandleUno(ActionEvent event) {
-        if (threadPlayMachine.isAlive()) {
+        if (threadPlayMachine.isAlive() && threadPlayMachine.hasPlayerPlayed()) {
             System.out.println("No puedes presionar UNO mientras la máquina está jugando.");
             return;
         }
-        // Lógica para manejar la acción de botón UNO
-        System.out.println("Maquina Toma carta");
         machinePlayer.addCard(this.deck.takeCard());
     }
 
-    /**
-     * Initializes the variables for the game.
-     */
     private void initVariables() {
         this.humanPlayer = new Player("HUMAN_PLAYER");
         this.machinePlayer = new Player("MACHINE_PLAYER");
@@ -128,9 +111,6 @@ public class GameUnoController implements Observer {
         this.posInitCardToShow = 0;
     }
 
-    /**
-     * Prints the human player's cards on the grid pane.
-     */
     private void printCardsHumanPlayer() {
         this.gridPaneCardsPlayer.getChildren().clear();
         Card[] currentVisibleCardsHumanPlayer = this.gameUno.getCurrentVisibleCardsHumanPlayer(this.posInitCardToShow);
@@ -140,37 +120,24 @@ public class GameUnoController implements Observer {
             ImageView cardImageView = card.getCard();
 
             cardImageView.setOnMouseClicked((MouseEvent event) -> {
-                // Aqui deberian verificar si pueden en la tabla jugar esa carta
                 try {
-                    if(this.table.getCurrentCardOnTheTable().getColor().equalsIgnoreCase(card.getColor())){
-                        //las cartas son del mismo color puede poner la carta
+                    if (canPlayCard(card)) {
                         gameUno.playCard(card);
                         tableImageView.setImage(card.getImage());
                         humanPlayer.removeCard(findPosCardsHumanPlayer(card));
                         threadPlayMachine.setHasPlayerPlayed(true);
                         printCardsHumanPlayer();
-                    } else if(this.table.getCurrentCardOnTheTable().getValue().equalsIgnoreCase(card.getValue())){
-                        //puede poner la carta
-                        gameUno.playCard(card);
-                        tableImageView.setImage(card.getImage());
-                        humanPlayer.removeCard(findPosCardsHumanPlayer(card));
-                        threadPlayMachine.setHasPlayerPlayed(true);
-                        printCardsHumanPlayer();
-                    }
-                    //else if validar las cartas que tienen poderes WILD
-                    else{
-                        //no puedes colocar la carta
-                        //JOptionPane.showMessageDialog(null, "No puedes colocar esa carta");
+                    } else {
                         System.out.println("No puedes colocar esa carta");
+                        threadPlayMachine.setHasPlayerPlayed(true);
                     }
-                }catch(IndexOutOfBoundsException e){
+                } catch (IndexOutOfBoundsException e) {
                     gameUno.playCard(card);
                     tableImageView.setImage(card.getImage());
                     humanPlayer.removeCard(findPosCardsHumanPlayer(card));
                     threadPlayMachine.setHasPlayerPlayed(true);
                     printCardsHumanPlayer();
                 }
-
             });
 
             this.gridPaneCardsPlayer.add(cardImageView, i, 0);
@@ -178,11 +145,32 @@ public class GameUnoController implements Observer {
     }
 
     /**
-     * Finds the position of a specific card in the human player's hand.
+     * Makes sure that it is valid to play a card
      *
-     * @param card the card to find
-     * @return the position of the card, or -1 if not found
+     * @param card Represents the card to valid
+     * @return
      */
+    private boolean canPlayCard(Card card) {
+        Card currentCardOnTheTable = this.table.getCurrentCardOnTheTable();
+
+        if (currentCardOnTheTable.getValue().equals("+2") && card.getValue().equals("+2")) {
+            return true;
+        }
+
+        if(currentCardOnTheTable.getValue().equals("SKIP")|| currentCardOnTheTable.getValue().equals("+2")){
+            return false;
+        }
+
+//        if (currentCardOnTheTable.getValue().equals("+4")
+//                || currentCardOnTheTable.getValue().equals("SKIP")
+//                || currentCardOnTheTable.getValue().equals("+2")) {
+//            return false;
+//        }
+
+        return currentCardOnTheTable.getValue().equals(card.getValue())
+                || currentCardOnTheTable.getColor().equals(card.getColor()) || currentCardOnTheTable.getValue().contains("WILD");
+    }
+
     private Integer findPosCardsHumanPlayer(Card card) {
         for (int i = 0; i < this.humanPlayer.getCardsPlayer().size(); i++) {
             if (this.humanPlayer.getCardsPlayer().get(i).equals(card)) {
@@ -192,11 +180,6 @@ public class GameUnoController implements Observer {
         return -1;
     }
 
-    /**
-     * Handles the "Back" button action to show the previous set of cards.
-     *
-     * @param event the action event
-     */
     @FXML
     void onHandleBack(ActionEvent event) {
         if (this.posInitCardToShow > 0) {
@@ -205,11 +188,6 @@ public class GameUnoController implements Observer {
         }
     }
 
-    /**
-     * Handles the "Next" button action to show the next set of cards.
-     *
-     * @param event the action event
-     */
     @FXML
     void onHandleNext(ActionEvent event) {
         if (this.posInitCardToShow < this.humanPlayer.getCardsPlayer().size() - 4) {
@@ -228,20 +206,12 @@ public class GameUnoController implements Observer {
         }
     }
 
-    // Método para actualizar las cartas de la máquina
-    public void someMethodThatUpdatesCards() {
-        int numberOfMachineCards = 7; // Obtén el número de cartas de la máquina de tu lógica de juego
-        updateMachineCards(numberOfMachineCards);
-    }
-
     @Override
     public void update(boolean isThreadRunning) {
-        if (isThreadRunning) {
-            deckButton.setDisable(true);
-            unoButton.setDisable(false);
-        } else {
-            deckButton.setDisable(false);
-            unoButton.setDisable(true);
-        }
+
+        deckButton.setDisable(false);
+        unoButton.setDisable(false);
+
+
     }
 }

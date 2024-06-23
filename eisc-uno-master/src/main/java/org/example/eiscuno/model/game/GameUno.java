@@ -35,12 +35,12 @@ public class GameUno implements IGameUno {
 
     /**
      * Starts the Uno game by distributing cards to players.
-     * The human player and the machine player each receive 10 cards from the deck.
+     * The human player and the machine player each receive 14 cards from the deck.
      */
     @Override
     public void startGame() {
         for (int i = 0; i < 14; i++) {
-            if (i < 8) {
+            if (i < 7) {
                 humanPlayer.addCard(this.deck.takeCard());
             } else {
                 machinePlayer.addCard(this.deck.takeCard());
