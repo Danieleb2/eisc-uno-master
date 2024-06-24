@@ -65,10 +65,10 @@ public class ThreadPlayMachine extends Thread implements Subject {
     public boolean validatePlay() {
         Card currentCardOnTheTable = this.table.getCurrentCardOnTheTable();
 
-        // Verificar si la carta en la mesa es "+2" o "+4" y corresponde a lastHumanCard
+        // Check if the card on the table is "+2" or "+4" and corresponds to lastHumanCard
         if ((currentCardOnTheTable.getValue().equals("+2") || currentCardOnTheTable.getValue().equals("+4")) &&
                 !currentCardOnTheTable.equals(lastPlayedCard) && currentCardOnTheTable.equals(lastHumanCard)) {
-            // No comer más cartas si la última carta en la mesa es la misma que jugó el humano
+            // No more cards if the last card on the table is the same as the human played
             return true;
         } else if (currentCardOnTheTable.getValue().equals("+2") && !currentCardOnTheTable.equals(lastPlayedCard)) {
             drawCard(2);
@@ -82,14 +82,14 @@ public class ThreadPlayMachine extends Thread implements Subject {
             return false;
         }
 
-        // Si la carta en la mesa no es +2, +4 o SKIP, verificar si hay una carta válida para jugar
+        // If the card on the table is not +2, +4, or SKIP, check if there is a valid card to play
         Card validCard = getValidCardToPlay();
         if (validCard == null) {
-            // Si no hay carta válida, tomar una del mazo
+            // If no valid card, draw one from the deck
             putCardOnTheTable();
             return false;
         } else {
-            //Hay una carta válida para jugar
+            // There is a valid card to play
             return true;
         }
     }
