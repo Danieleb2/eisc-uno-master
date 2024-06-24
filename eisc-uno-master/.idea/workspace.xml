@@ -18,11 +18,12 @@
         <option value="CSS File" />
         <option value="Class" />
         <option value="Interface" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -57,12 +58,15 @@
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "Application.HelloApplication.executor": "Run",
     "Application.Main.executor": "Run",
+    "JUnit.GameUnoTest.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "fsvc",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "matb",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/natis/Downloads/Thisthing/eisc-uno-master (1)UNOGAME/eisc-uno-master",
+    "last_opened_file_path": "C:/Users/mauri/IdeaProjects/eisc-uno-master/eisc-uno-master",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -79,8 +83,14 @@
       <recent name="C:\Users\fsvc1\Coding\eisc-uno\src\main\resources\org\example\eiscuno\images" />
       <recent name="C:\Users\fsvc1\Coding\eisc-uno\src" />
     </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="org.example.eiscuno.model.game" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.GameUnoTest">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.eiscuno.Main" />
       <module name="eisc-uno" />
@@ -94,19 +104,27 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="GameUnoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="eisc-uno" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.eiscuno.model.game.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.eiscuno.model.game" />
+      <option name="MAIN_CLASS_NAME" value="org.example.eiscuno.model.game.GameUnoTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.GameUnoTest" />
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
-        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -139,6 +157,10 @@
       <workItem from="1719082578677" duration="3021000" />
       <workItem from="1719086361020" duration="756000" />
       <workItem from="1719101110270" duration="8588000" />
+      <workItem from="1719173515317" duration="9088000" />
+      <workItem from="1719182690866" duration="4820000" />
+      <workItem from="1719188109444" duration="176000" />
+      <workItem from="1719189368321" duration="397000" />
     </task>
     <servers />
   </component>
