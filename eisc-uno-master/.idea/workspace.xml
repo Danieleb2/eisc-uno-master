@@ -90,7 +90,7 @@
       <recent name="org.example.eiscuno.model.game" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.GameUnoTest">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.eiscuno.Main" />
       <module name="eisc-uno" />
@@ -121,8 +121,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.GameUnoTest" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.GameUnoTest" />
       </list>
     </recent_temporary>
   </component>
@@ -160,7 +160,8 @@
       <workItem from="1719173515317" duration="9088000" />
       <workItem from="1719182690866" duration="4820000" />
       <workItem from="1719188109444" duration="176000" />
-      <workItem from="1719189368321" duration="397000" />
+      <workItem from="1719188297066" duration="3773000" />
+      <workItem from="1719193124972" duration="865000" />
     </task>
     <servers />
   </component>

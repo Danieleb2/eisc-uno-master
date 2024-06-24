@@ -2,6 +2,7 @@ package org.example.eiscuno.controller;
 
 
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -58,6 +59,7 @@ public class GameUnoController implements Observer {
     private boolean unoButtonPressed = false;
     private PauseTransition unoTimer;
     private Card lastPlayedCardByHuman;
+    private Card lastPlayedCardByMachine;
 
     @FXML
     public void initialize() {
@@ -84,30 +86,46 @@ public class GameUnoController implements Observer {
             }
         });
     }
-
+    /**
+     * Adds two cards to the human player's hand when the UNO button timer finishes.
+     */
     private void addTwoCardsToHumanPlayer() {
         gameUno.eatCard(humanPlayer, 2);
         printCardsHumanPlayer();
         System.out.println("No se presionó UNO a tiempo. Se agregaron dos cartas.");
     }
-
+    /**
+     * Sets the flag indicating that the UNO button has been pressed by the human player.
+     */
     public void humanPressUnoButton() {
         unoButtonPressed = true;
     }
-
+    /**
+     * Starts the UNO button timer to check if the human player presses UNO in time.
+     */
     public void startUnoTimer() {
         unoButtonPressed = false;
         unoTimer.playFromStart();
     }
-
+    /**
+     * Handles the action when the "Salir" (Exit) button is pressed to close the game.
+     *
+     * @param event The ActionEvent triggered by pressing the salirButton.
+     */
     private void handleSalirButtonAction(ActionEvent event) {
         closeGame();
     }
-
+    /**
+     * Closes the UNO game.
+     */
     public void closeGame() {
         System.exit(0);
     }
-
+    /**
+     * Handles the action when the player wants to draw a card from the deck.
+     *
+     * @param event The ActionEvent triggered by pressing the deckButton.
+     */
     @FXML
     private void onHandleTakeCard(ActionEvent event) {
         if (threadPlayMachine.hasPlayerPlayed()) {
@@ -119,7 +137,11 @@ public class GameUnoController implements Observer {
             printCardsHumanPlayer();
         }
     }
-
+    /**
+     * Handles the action when the player presses the UNO button.
+     *
+     * @param event The ActionEvent triggered by pressing the unoButton.
+     */
     @FXML
     private void onHandleUno(ActionEvent event) {
         if (machinePlayer.getCardsPlayer().size() == 1) {
@@ -135,7 +157,9 @@ public class GameUnoController implements Observer {
         }
         humanPressUnoButton();
     }
-
+    /**
+     * Initializes the game variables and starts the game setup.
+     */
     private void initVariables() {
         this.humanPlayer = new Player("HUMAN_PLAYER");
         this.machinePlayer = new Player("MACHINE_PLAYER");
@@ -145,8 +169,11 @@ public class GameUnoController implements Observer {
         this.posInitCardToShow = 0;
         this.lastPlayedCardByHuman = null;
     }
-
+    /**
+     * Updates the display of cards in the human player's hand.
+     */
     private void printCardsHumanPlayer() {
+        Platform.runLater(() -> {
         this.gridPaneCardsPlayer.getChildren().clear();
         Card[] currentVisibleCardsHumanPlayer = this.gameUno.getCurrentVisibleCardsHumanPlayer(this.posInitCardToShow);
 
@@ -182,13 +209,52 @@ public class GameUnoController implements Observer {
             startUnoTimer();
         }
         showWinner();
+        });
     }
 
+    private boolean hasEatenTwoCards = false;
+    private boolean hasEatenFourCards = false;
+    /**
+     * Verifies and handles special actions based on the last card played by the machine player.
+     */
+    private void verifyLastCardPlayedByMachine() {
+        Card card = this.threadPlayMachine.getLastPlayedCard();
+        if (card == null) {
+            return;
+        }
+
+        // Verificar si la última carta jugada por la máquina fue un +2 o +4
+        if (card.getValue().equals("+2")) {
+            if (!hasEatenTwoCards) {
+                gameUno.eatCard(humanPlayer, 2);
+                hasEatenTwoCards = true;
+                System.out.println("Human player has " + humanPlayer.getCardsPlayer().size() + " cards");
+            } else {
+                // Resetear la bandera si la máquina juega un nuevo +2
+                hasEatenTwoCards = false;
+            }
+        } else if (card.getValue().equals("+4")) {
+            if (!hasEatenFourCards) {
+                gameUno.eatCard(humanPlayer, 4);
+                hasEatenFourCards = true;
+                System.out.println("Human player has " + humanPlayer.getCardsPlayer().size() + " cards");
+            } else {
+                // Resetear la bandera si la máquina juega un nuevo +4
+                hasEatenFourCards = false;
+            }
+        }
+
+        Platform.runLater(() -> {
+            // Llamar a printCardsHumanPlayer() desde aquí
+            printCardsHumanPlayer();
+        });
+    }
 
     /**
-     * Verifies if the card matches the conditions in order to be played
-     * @param card is the card to analise
-     * @return true if the card can be played, false if the card can´t be played
+     * Checks if a card can be played by the human player on the current table card.
+     *
+     * @param card The card to check for playability.
+     * @return true if the card can be played, false otherwise.
      */
     private boolean canPlayCard(Card card) {
         Card currentCardOnTheTable = this.table.getCurrentCardOnTheTable();
@@ -217,7 +283,12 @@ public class GameUnoController implements Observer {
         return currentCardOnTheTable.getValue().equals(card.getValue())
                 || currentCardOnTheTable.getColor().equals(card.getColor())||card.getValue().equals("+4");
     }
-
+    /**
+     * Finds the position of a card in the human player's hand.
+     *
+     * @param card The card to find.
+     * @return The index of the card in the player's hand, or -1 if not found.
+     */
     private Integer findPosCardsHumanPlayer(Card card) {
         for (int i = 0; i < this.humanPlayer.getCardsPlayer().size(); i++) {
             if (this.humanPlayer.getCardsPlayer().get(i).equals(card)) {
@@ -226,7 +297,11 @@ public class GameUnoController implements Observer {
         }
         return -1;
     }
-
+    /**
+     * Handles the action when the player wants to view the previous set of cards in their hand.
+     *
+     * @param event The ActionEvent triggered by pressing the back button.
+     */
     @FXML
     void onHandleBack(ActionEvent event) {
         if (this.posInitCardToShow > 0) {
@@ -234,7 +309,11 @@ public class GameUnoController implements Observer {
             printCardsHumanPlayer();
         }
     }
-
+    /**
+     * Handles the action when the player wants to view the next set of cards in their hand.
+     *
+     * @param event The ActionEvent triggered by pressing the next button.
+     */
     @FXML
     void onHandleNext(ActionEvent event) {
         if (this.posInitCardToShow < this.humanPlayer.getCardsPlayer().size() - 4) {
@@ -242,7 +321,11 @@ public class GameUnoController implements Observer {
             printCardsHumanPlayer();
         }
     }
-
+    /**
+     * Updates the display of cards in the machine player's hand.
+     *
+     * @param numberOfCards The number of cards in the machine player's hand.
+     */
     public void updateMachineCards(int numberOfCards) {
         gridPaneCardsMachine.getChildren().clear(); // Limpia el GridPane
         for (int i = 0; i < 4; i++) {
@@ -253,10 +336,13 @@ public class GameUnoController implements Observer {
         }
     }
 
+    /**
+     * Shows the winner of the game and closes the game window.
+     */
     public void showWinner() {
-        if (this.humanPlayer.getCardsPlayer().size() == 0) {
+        if (this.humanPlayer.getCardsPlayer().isEmpty()) {
             unoTimer.stop();
-            String tittle = "WINNER";
+            String tittle = "¡GANADOR";
             String header = "";
             String content = "¡Felicidades has ganado el juego!";
             Winner alertBox = new Winner();
@@ -264,10 +350,16 @@ public class GameUnoController implements Observer {
             closeGame();
         }
     }
-
+    /**
+     * Update method implemented from the Observer interface.
+     * Enables game buttons and checks for special actions after the machine player's turn.
+     *
+     * @param isThreadRunning Indicates if the game thread is still running.
+     */
     @Override
     public void update(boolean isThreadRunning) {
         deckButton.setDisable(false);
         unoButton.setDisable(false);
+        verifyLastCardPlayedByMachine();
     }
 }
